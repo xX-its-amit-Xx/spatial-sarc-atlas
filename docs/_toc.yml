@@ -1,0 +1,14 @@
+format: jb-book
+root: intro
+parts:
+  - caption: Analysis walkthroughs
+    chapters:
+      - file: notebooks/01_qc_and_filtering
+      - file: notebooks/02_normalization_and_clustering
+      - file: notebooks/03_celltype_deconvolution
+      - file: notebooks/04_tumor_stroma_interface
+      - file: notebooks/05_niche_identification
+  - caption: Reference
+    chapters:
+      - file: cookbook
+      - file: limitations

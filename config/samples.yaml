@@ -1,0 +1,69 @@
+# Public sarcoma spatial transcriptomics datasets reanalyzed in this repo.
+#
+# Verify accessions before running:
+#   python scripts/fetch_public_data.py --verify-only
+#
+# To add a new sample, add an entry under the appropriate modality with:
+#   id:        a short stable identifier used as a directory name everywhere
+#   accession: GSE / Zenodo DOI / direct URL
+#   tumor:     a free-text tumor subtype label
+#   platform:  visium_ffpe | visium_ff | cosmx
+#   citation:  bibtex-style short citation
+#   notes:     anything you want to remember six months from now
+
+visium:
+  - id: GSE227469_angiosarcoma_01
+    accession: GSE227469
+    sample: GSM7100001       # replace with the GSM you want; series has multiple
+    tumor: angiosarcoma
+    platform: visium_ffpe
+    citation: "Li et al., Commun Biol (2023)"
+    notes: |
+      Asian head & neck angiosarcoma cohort. ~80 cases in the series; this
+      pipeline pulls one representative sample by default. Set `sample`
+      explicitly to override.
+      Verified on 2026-05-20 — series advertises platform GPL24676 (Visium).
+
+  # The two entries below were originally placeholders. A 2026-05-20 run of
+  # `scripts/fetch_public_data.py --verify-only` rejected both because their
+  # GEO series do not advertise a Visium platform:
+  #
+  #   - GSE190294 -> GPL21697 (NOT Visium)
+  #   - GSE205276 -> GPL20301 (NOT Visium)
+  #
+  # Leaving them commented out so the pipeline runs cleanly on the one
+  # verified sample. Replace with verified Visium accessions when you find
+  # them — search GEO with `(sarcoma) AND ("Visium" OR "GPL24676" OR
+  # "GPL30178" OR "GPL30172")` to filter to Visium platforms.
+  #
+  # - id: GSE190294_softtissue_01
+  #   accession: GSE190294
+  #   tumor: soft_tissue_sarcoma
+  #   platform: visium_ff
+  #   citation: "REJECTED on 2026-05-20: GPL21697, not Visium"
+  #
+  # - id: GSE205276_synovial_01
+  #   accession: GSE205276
+  #   tumor: synovial_sarcoma
+  #   platform: visium_ff
+  #   citation: "REJECTED on 2026-05-20: GPL20301, not Visium"
+
+cosmx:
+  - id: nanostring_softtissue_demo
+    accession: nanostring_public_release
+    url: https://nanostring.com/products/cosmx-spatial-molecular-imager/ffpe-dataset/
+    sample: null
+    tumor: soft_tissue_sarcoma
+    platform: cosmx
+    citation: "NanoString CosMx public demo data (terms of use apply)"
+    notes: |
+      Pulled at runtime by scripts/fetch_public_data.py. Treated as an
+      optional sample — pipeline will skip cleanly if the file is not
+      available.
+
+# Global download options
+download:
+  cache_dir: data/raw
+  resume: true
+  max_retries: 3
+  user_agent: "spatial-sarc-atlas/0.1 (+https://github.com/xX-its-amit-Xx/spatial-sarc-atlas)"

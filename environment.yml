@@ -1,0 +1,55 @@
+name: spatial-sarc-atlas
+channels:
+  - conda-forge
+  - bioconda
+  - nodefaults
+dependencies:
+  - python=3.11
+  - pip
+  - mamba
+  # Core scientific stack
+  - numpy>=1.26,<2.0
+  - pandas>=2.1
+  - scipy>=1.11
+  - scikit-learn>=1.4
+  - matplotlib>=3.8
+  - seaborn>=0.13
+  - tqdm
+  - pyyaml
+  - h5py
+  - zarr
+  # Single-cell + spatial
+  - anndata>=0.10
+  - scanpy>=1.10
+  - squidpy>=1.4
+  - leidenalg
+  - python-igraph
+  - umap-learn
+  - scrublet
+  - spatialdata>=0.1
+  - spatialdata-io>=0.1
+  # Probabilistic / GPU-optional
+  - pytorch>=2.1
+  - pyro-ppl>=1.8
+  # Workflow + notebooks
+  - snakemake-minimal>=8.0
+  - jupyterlab>=4.0
+  - ipywidgets
+  - nbconvert
+  - papermill
+  # Docs
+  - jupyter-book>=1.0,<2
+  - sphinx
+  - sphinx-book-theme
+  # Data ingest helpers
+  - geoparse
+  - pysradb
+  - pooch
+  - requests
+  # pip-only packages
+  - pip:
+      - cell2location>=0.1.4
+      - scvi-tools>=1.1
+      - tangram-sc>=1.0.4
+      - sopa
+      - statannotations

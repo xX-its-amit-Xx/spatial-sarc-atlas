@@ -1,0 +1,75 @@
+# Sarcoma-leaning scRNA-seq reference atlases used for deconvolution.
+#
+# Each entry tells `scripts/build_reference.py` how to obtain an AnnData with
+# a `cell_type` column. Two routes:
+#
+#   1. GEO route (preferred):
+#        accession:         GSE accession; supplementary files are downloaded
+#                           and parsed automatically.
+#        cell_type_column:  required — the column in the series' metadata file
+#                           that carries the cell-type label.
+#        metadata_pattern:  optional regex; required when the series ships
+#                           multiple metadata-looking files.
+#        counts_format:     optional — "auto" (default), "mtx10x", or "dense".
+#
+#   2. Local h5ad route (escape hatch):
+#        local_path:        path to a pre-converted .h5ad file with a
+#                           `cell_type` obs column. Bypasses the GEO loader.
+#
+# Per-reference conversions are cached at `data/references/cache/<id>.h5ad`
+# so a re-run is fast; delete the cache file to force re-conversion.
+
+references:
+  - id: jerby_arnon_2021_synovial
+    accession: GSE131309
+    citation: "Jerby-Arnon et al., Nat Med (2021)"
+    tumor: synovial_sarcoma
+    cell_type_column: cell_type
+    metadata_pattern: "(?i)(cell.?metadata|cell.?annot)"
+    counts_format: auto
+    landing_page: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE131309
+    purpose: |
+      Primary synovial-sarcoma scRNA atlas. Provides malignant cell states
+      plus a well-annotated immune/stromal compartment. Used as the
+      reference of record for cell2location signature training.
+    notes: |
+      If GEOparse can't resolve the metadata column, open the downloaded
+      `*cell_metadata*.tsv.gz` under data/references/cache/raw/jerby_arnon_2021_synovial/
+      and update `cell_type_column:` to the actual column name.
+
+  - id: subramanian_2024_archival_sarcoma
+    citation: "Subramanian et al., Clin Cancer Res (2024)"
+    tumor: mixed_sarcoma
+    landing_page: https://pmc.ncbi.nlm.nih.gov/articles/PMC11443197/
+    # This atlas is not on open GEO — most samples are on dbGaP. To include
+    # it, prepare an h5ad manually (cells × genes, with `cell_type` in obs)
+    # and uncomment `local_path:` below.
+    # local_path: data/references/subramanian_2024_archival_sarcoma.h5ad
+    purpose: |
+      Multi-subtype archival-tissue scRNA from sarcoma patients with
+      programs associated with ICB resistance. Used to enrich the
+      malignant + macrophage compartments when available.
+
+# Cell-type label harmonization. Maps source-specific labels to a common
+# vocabulary so that downstream deconvolution sees one consistent set.
+label_harmonization:
+  malignant: [tumor, malignant, sarcoma_cell, SS_malignant, AS_malignant, tumor_cell]
+  caf: [CAF, fibroblast, myCAF, iCAF, stromal_fibroblast, fibroblast_caf]
+  endothelial: [endothelial, EC, blood_EC, lymphatic_EC, tumor_endothelial]
+  macrophage: [macrophage, TAM, M1, M2, monocyte_derived_macrophage, monocyte]
+  t_cell: [T, T_cell, CD8_T, CD4_T, Treg, exhausted_T]
+  b_cell: [B, B_cell, plasma_cell, plasma]
+  nk_cell: [NK, NK_cell]
+  dendritic: [DC, cDC1, cDC2, pDC]
+  smooth_muscle: [SMC, smooth_muscle, pericyte]
+
+# Number of cells per type to subsample when training the cell2location
+# regression model. Keeps training tractable on a single-GPU box.
+subsample:
+  cells_per_type: 2500
+  random_state: 42
+
+# Output paths (relative to repo root)
+output:
+  combined_h5ad: data/references/sarcoma_reference_combined.h5ad
+  signatures_h5ad: data/references/sarcoma_reference_signatures.h5ad

@@ -1,0 +1,39 @@
+# Data and outputs are not committed.
+data/raw/
+data/references/
+!data/references/README.md
+results/visium/
+results/figures/*.pdf
+results/figures/*.png
+results/reports/*.md
+results/notebooks/
+
+# Notebook execution artifacts
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# jupyter-book build output
+docs/_build/
+docs/notebooks/   # staged at build time by the pages workflow
+
+# Snakemake state
+.snakemake/
+logs/
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.eggs/
+*.egg-info/
+.venv/
+venv/
+.testenv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

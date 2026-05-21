@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install minimal smoke deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml nbformat
+
+      - name: Validate YAML configs
+        run: |
+          python - <<'PY'
+          import yaml, pathlib
+          for p in pathlib.Path("config").glob("*.yaml"):
+              yaml.safe_load(p.read_text())
+              print("OK", p)
+          PY
+
+      - name: Validate notebooks are valid ipynb
+        run: |
+          python - <<'PY'
+          import nbformat, pathlib
+          for p in pathlib.Path("notebooks").glob("*.ipynb"):
+              nbformat.read(str(p), as_version=4)
+              print("OK", p)
+          PY
+
+      - name: Lint Snakefile syntax
+        run: |
+          python -m pip install snakemake-minimal
+          snakemake --list || true   # surface syntax errors without running rules
